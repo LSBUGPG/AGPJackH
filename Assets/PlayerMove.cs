@@ -4,39 +4,37 @@ using UnityEngine;
 
 public class PlayerMove : MonoBehaviour
 {
-    public float movementSpeed;
-    public float gravityForce;
+    public float speed = 3;
+    public float rotationSpeed = 90;
+    public float gravity = -20f;
+    public float jumpSpeed = 15;
 
-    // Use this for initialization
-    void Start()
+    CharacterController characterController;
+    Vector3 moveVelocity;
+    Vector3 turnVelocity;
+
+    void Awake()
     {
-        Physics.gravity = new Vector3(0, gravityForce, 0);
+        characterController = GetComponent<CharacterController>();
     }
 
-    //Update is called once per frame
-    void FixedUpdate()
+    void Update()
     {
+        var hInput = Input.GetAxis("Horizontal");
+        var vInput = Input.GetAxis("Vertical");
 
-        if (Input.GetKey(KeyCode.LeftShift) && Input.GetKey("w"))
+        if (characterController.isGrounded)
         {
-            transform.position += transform.TransformDirection(Vector3.forward) * Time.deltaTime * movementSpeed * 2.5f;
-        }
-        else if (Input.GetKey("w") && !Input.GetKey(KeyCode.LeftShift))
-        {
-            transform.position += transform.TransformDirection(Vector3.forward) * Time.deltaTime * movementSpeed;
-        }
-        else if (Input.GetKey("s"))
-        {
-            transform.position -= transform.TransformDirection(Vector3.forward) * Time.deltaTime * movementSpeed;
+            moveVelocity = transform.forward * speed * vInput;
+            turnVelocity = transform.up * rotationSpeed * hInput;
+            if (Input.GetButtonDown("Jump"))
+            {
+                moveVelocity.y = jumpSpeed;
+            }
         }
 
-        if (Input.GetKey("a") && !Input.GetKey("d"))
-        {
-            transform.position += transform.TransformDirection(Vector3.left) * Time.deltaTime * movementSpeed;
-        }
-        else if (Input.GetKey("d") && !Input.GetKey("a"))
-        {
-            transform.position -= transform.TransformDirection(Vector3.left) * Time.deltaTime * movementSpeed;
-        }
+        moveVelocity.y += gravity * Time.deltaTime;
+        characterController.Move(moveVelocity * Time.deltaTime);
+        transform.Rotate(turnVelocity * Time.deltaTime);
     }
 }
