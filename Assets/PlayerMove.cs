@@ -1,4 +1,4 @@
-﻿    using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,10 +9,17 @@ public class PlayerMove : MonoBehaviour
     public float speed = 20.0f;
     public float turnSmooth = 2.0f;
     public float jumpImpulse = 15f;
-    float gravity = -20f;
+    private Animator anim;
+    float gravity = -25f;
     Vector3 velocity;
     float spin;
     bool jump;
+
+
+    private void Start()
+    {
+        anim = GetComponent<Animator>();
+    }
 
     public void RelativeMovement(Vector3 input)
     {
@@ -28,6 +35,16 @@ public class PlayerMove : MonoBehaviour
         if (!controller.isGrounded)
         {
             velocity.y = y;
+        }
+        if (jump)
+        {
+            //Jumping
+            anim.SetTrigger("Jump");
+        }
+        else
+        {
+            //walking
+            //anim.SetTrigger("Walk");
         }
     }
 
