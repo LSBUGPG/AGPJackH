@@ -26,6 +26,24 @@ public class PlayerMove : MonoBehaviour
         if (controller.isGrounded)
         {
             jump = input.y > 0f;
+            if (jump)
+            {
+                //Jumping
+                anim.SetTrigger("Jump");
+                anim.ResetTrigger("Idle");
+                anim.ResetTrigger("Walk");
+            }
+            else if (input.magnitude > 0f)
+            {
+                //walking
+                anim.SetTrigger("Walk");
+                anim.ResetTrigger("Idle");
+            }
+            else
+            {
+                anim.SetTrigger("Idle");
+                anim.ResetTrigger("Walk");
+            }
         }
         input.y = 0f;
         Vector3 direction = Vector3.Cross(camera.right, Vector3.up);
@@ -35,16 +53,6 @@ public class PlayerMove : MonoBehaviour
         if (!controller.isGrounded)
         {
             velocity.y = y;
-        }
-        if (jump)
-        {
-            //Jumping
-            anim.SetTrigger("Jump");
-        }
-        else
-        {
-            //walking
-            //anim.SetTrigger("Walk");
         }
     }
 
